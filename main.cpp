@@ -6,60 +6,71 @@ class smart_array
 public:
 	smart_array(size_t size) : arr_(new int[size]), size_(size)
 	{
-		std::cout << "constructor called\n";
+		std::cout << "\nconstructor called\n";
 	};
 	~smart_array()
 	{
 		delete[] arr_;
 		std::cout << "\ndestructor called\n";
 	};
-	smart_array(const smart_array &array) : arr_(new int[array.size_]), size_(array.size_), counter(counter = 0)
+	smart_array(smart_array& array)
 	{
+		delete[] this->arr_;
+		this->counter = 0;
+		this->size_ = array.size_;
+		this->arr_ = new int[array.size_];
+		for (int i = 0; i < this->size_; i++)
+		{
+			this->add_element(array.get_element(i));
+		}
+		//delete[] & array;
 		std::cout << "\ncalled copy constructor\n";
 	};
 
-	void add_element(int x)
+	void add_element(int element)
 	{
 		if (this->counter < this->size_)
 		{
-			counter++;
-			arr_[counter] = x;
+			arr_[counter] = element;
 			std::cout << arr_[counter] << "\t";
+			counter++;
 		}
 		else
 		{
-			std::cout << "Array index out of bounds!" << std::endl;
+			std::cout << "\nArray index out of bounds!\n" << std::endl;
 		}
 	};
-	auto get_element(int a)
+	int get_element(int index)
 	{
 
-		if (this->size_ >= a)
+		if (this->counter > index)
 		{
-			for (int i = 0; i <= a; i++)
-			{
-				if (i == a)
-				{
-					std::cout << arr_[i] << std::endl;
-				}
-			}
+
+			return this->arr_[index];
 		}
 		else
 		{
-			return "\nThere is no such index in the array";
+			throw "\nThere is no such index in the array\n";
 		}
 
-		throw "ERR";
 	}
-	void operator=(const smart_array &array)
+
+	void operator=(smart_array& array)
 	{
-		size_ = array.size_;
-		arr_ = new int[array.size_];
-		counter = 0;
+		delete[] this->arr_;
+		this->counter = 0;
+		this->size_ = array.size_;
+		this->arr_ = new int[array.size_];
+		for (int i = 0; i < this->size_; i++)
+		{
+			this->add_element(array.get_element(i));
+		}
+		//delete[] & array;
+		std::cout << "\ncalled overload operator=\n";
 	}
 
 private:
-	int *arr_;
+	int* arr_;
 	size_t size_;
 	size_t counter = 0;
 };
@@ -72,19 +83,22 @@ int main()
 		smart_array arr(5);
 		arr.add_element(1);
 		arr.add_element(4);
-		arr.add_element(155);
-		arr.add_element(14);
-		arr.add_element(15);
-		arr.add_element(16);
-		std::cout << arr.get_element(7) << std::endl;
 
+		std::cout << arr.get_element(1) << std::endl;
+		//4
 		smart_array new_array(2);
-		new_array.add_element(44);
-		arr = new_array;
+		new_array.add_element(155);
+		new_array.add_element(14);
 
-		smart_array new_array_2 = new_array;
+		arr = new_array;
+		std::cout << arr.get_element(1) << std::endl;
+		//14
+		smart_array new_array_2(arr);
+		std::cout << new_array_2.get_element(1) << std::endl;
+		//14
 	}
-	catch (const std::exception &ex)
+	catch (const std::exception& ex)
+
 	{
 		std::cout << ex.what() << std::endl;
 	}
