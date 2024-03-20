@@ -61,7 +61,7 @@ public:
 		this->counter = 0;
 		this->size_ = array.size_;
 		this->arr_ = new int[array.size_];
-		for (int i = 0; i < this->size_; i++)
+		for (int i = 0; i < array.counter; i++)
 		{
 			this->add_element(array.get_element(i));
 		}
